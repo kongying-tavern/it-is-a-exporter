@@ -4,11 +4,11 @@ public static class Resources
     public static HashSet<string> CreateAssetSourcePathHashSet(AssetsMapJSON.Object[] assetsMap, string assetsName)
     {
         var set = new HashSet<string>();
-        Parallel.ForEach(assetsMap, asset =>
+        Parallel.ForEach(assetsMap, assets =>
         {
-            if (asset.Name.StartsWith(assetsName))
+            if (assets.Name.StartsWith(assetsName))
             {
-                set.Add(asset.SourcePath);
+                set.Add(assets.SourcePath);
             }
         });
         return set;
