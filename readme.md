@@ -10,7 +10,7 @@ Yes, it's just a exporter.
 
 1. Download latest [.NET 6 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 2. Use `.NET CLI` to install [dotnet-script](https://github.com/filipw/dotnet-script).
-3. Download [HoYoStudio](https://github.com/Razmoth/HoYoStudio) version v0.16.69.
+3. Download [HoYoStudio](https://github.com/Razmoth/HoYoStudio) version v0.17.00.
 4. Use `AssetStudioCLI.exe` in HoYoStudio to build **`assets_map.json`(must be json)**.
 5. Clone or download this repository.
 6. Tell `./scripts/main.csx` whereis `assets_map.json` and `AssetStudioCLI.exe`(in the directory of HoYoStudio).
