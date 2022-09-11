@@ -28,7 +28,7 @@ public static class Resources
     {
         foreach (var path in assetSourcePathHashSet)
         {
-            var args = $"\"{path}\" ./data/{assetsName} -f {assetsName} -g GI -t Texture2D";
+            var args = $"\"{path}\" ./data/{assetsName} --filter {assetsName} --game GI --type Texture2D";
             var watch = Stopwatch.StartNew();
             try
             {
@@ -81,7 +81,7 @@ public static class Resources
         } while (Process.GetProcessesByName("AssetStudioCLI") is null);
         Thread.Sleep(15000);
         Console.WriteLine($"[Start] - Resources DeleteSameFileBySHA256(\"{directory}\")\n");
-        var pattern = @"\bUI_MapBack_(?<X>-?\d+)_(?<Y>-?\d+)_([0-9A-F]{2,})\.png\b";
+        var pattern = @"\bUI_MapBack_(?<X>-?\d+)_(?<Y>-?\d+)#\d+\.png\b";
         var regex = new Regex(pattern, RegexOptions.IgnoreCase);
         if (Directory.Exists(directory))
         {
@@ -126,15 +126,15 @@ public static class Resources
         }
     }
 
-    private static string ByteArrayToString(byte[] array)
-    {
-        var stringBuilder = new StringBuilder(array.Length);
-        for (int i = 0; i < array.Length - 1; i++)
-        {
-            stringBuilder.Append($"{array[i]:X2}");
-        }
-        return stringBuilder.ToString();
-    }
+    // private static string ByteArrayToString(byte[] array)
+    // {
+    //     var stringBuilder = new StringBuilder(array.Length);
+    //     for (int i = 0; i < array.Length - 1; i++)
+    //     {
+    //         stringBuilder.Append($"{array[i]:X2}");
+    //     }
+    //     return stringBuilder.ToString();
+    // }
     private static string ComputeHashStringFromFileInfo(FileInfo fileInfo, SHA256 sha256)
     {
         string hashString = string.Empty;
@@ -148,7 +148,8 @@ public static class Resources
                 // Compute the hash of the fileStream.
                 var bytes = sha256.ComputeHash(fileStream);
                 // PrintByteArray(bytes);
-                hashString = ByteArrayToString(bytes);
+                // https://github.com/PowerShell/PowerShell/blob/7dc4587014bfa22919c933607bf564f0ba53db2e/src/Microsoft.PowerShell.Commands.Utility/commands/utility/GetHash.cs#L172
+                hashString = BitConverter.ToString(bytes).Replace("-", string.Empty);
             }
             catch (IOException e)
             {
