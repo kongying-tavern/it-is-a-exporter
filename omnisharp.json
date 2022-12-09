@@ -1,6 +1,15 @@
 {
   "script": {
+    "enabled": true,
     "enableScriptNuGetReferences": true,
     "defaultTargetFramework": "net6.0"
+  },
+  "FormattingOptions": {
+    "EnableEditorConfigSupport": true
+  },
+  "RoslynExtensionsOptions": {
+    "enableDecompilationSupport": true,
+    "enableImportCompletion": true,
+    "enableAnalyzersSupport": true
   }
 }

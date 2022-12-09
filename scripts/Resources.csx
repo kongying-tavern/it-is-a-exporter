@@ -4,16 +4,18 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Collections.Concurrent;
+
 public static class Resources
 {
-    public static HashSet<string> CreateAssetSourcePathHashSet(AssetsMapJSON.Object[] assetsMap, string assetsName)
+    public static ConcurrentDictionary<string, byte> CreateAssetSourcePathHashSet(AssetsMapJSON.Object[] assetsMap, string assetsName)
     {
-        var set = new HashSet<string>();
+        var set = new ConcurrentDictionary<string, byte>();
         Parallel.ForEach(assetsMap, assets =>
         {
             if (assets.Name.StartsWith(assetsName))
             {
-                set.Add(assets.SourcePath);
+                set.TryAdd(assets.Source, 0);
             }
         });
         return set;
@@ -24,11 +26,11 @@ public static class Resources
     /// <param name="assetSourcePathHashSet">assets path set</param>
     /// <param name="assetStudioCLIPath">assetStudioCil file path</param>
     /// <param name="assetsName">assets name</param>
-    public static void Export(HashSet<string> assetSourcePathHashSet, string assetStudioCLIPath, string assetsName)
+    public static void Export(ConcurrentDictionary<string, byte> assetSourcePathHashSet, string assetStudioCLIPath, string assetsName)
     {
-        foreach (var path in assetSourcePathHashSet)
+        foreach (var path in assetSourcePathHashSet.Keys)
         {
-            var args = $"\"{path}\" ./data/{assetsName} --filter {assetsName} --game GI --type Texture2D";
+            var args = $"\"{path}\" ./data/{assetsName} --names {assetsName} --game GI --types Texture2D";
             var watch = Stopwatch.StartNew();
             try
             {
@@ -52,13 +54,13 @@ public static class Resources
                 watch.Stop();
                 Console.WriteLine($"[Finished][{watch.ElapsedMilliseconds}ms] - Export with args: {args}");
             }
-        };
+        }
     }
     public static void Delete()
     {
         try
         {
-            Console.WriteLine($"[Start] - Resources Delete.");
+            Console.WriteLine("[Start] - Resources Delete.");
             Directory.Delete("./data", true);
         }
         catch (Exception e)
@@ -67,7 +69,7 @@ public static class Resources
         }
         finally
         {
-            Console.WriteLine($"[Finished] - Resources Delete.");
+            Console.WriteLine("[Finished] - Resources Delete.");
         }
     }
     public static void DeleteSameFileBySHA256(string directory)
@@ -81,7 +83,7 @@ public static class Resources
         } while (Process.GetProcessesByName("AssetStudioCLI") is null);
         Thread.Sleep(15000);
         Console.WriteLine($"[Start] - Resources DeleteSameFileBySHA256(\"{directory}\")\n");
-        var pattern = @"\bUI_MapBack_(?<X>-?\d+)_(?<Y>-?\d+)#\d+\.png\b";
+        const string pattern = @"\bUI_MapBack_(?<X>-?\d+)_(?<Y>-?\d+)#\d+\.png\b";
         var regex = new Regex(pattern, RegexOptions.IgnoreCase);
         if (Directory.Exists(directory))
         {
@@ -117,7 +119,7 @@ public static class Resources
                         }
                         Console.WriteLine();
                     }
-                };
+                }
             }
         }
         else
