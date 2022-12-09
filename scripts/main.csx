@@ -15,7 +15,8 @@ if (Args.Count == 2)
         AssetsIndex.UI_Map_HomeWorld_,
         AssetsIndex.UI_Map_AbyssalPalace_,
         AssetsIndex.UI_EmotionIcon,
-        AssetsIndex.UI_EmotionTagIcon
+        AssetsIndex.UI_EmotionTagIcon,
+        AssetsIndex.UI_Gcg_CardFace_
     };
 
     var assetsMap = await AssetsMapJSON.DeserializeFromFileAsync(fileName);
@@ -24,11 +25,8 @@ if (Args.Count == 2)
     var watch = Stopwatch.StartNew();
     try
     {
-        Console.WriteLine($"[Start] - Export start.");
-        Parallel.ForEach(assetsIndex, assetsName =>
-        {
-            Resources.Export(Resources.CreateAssetSourcePathHashSet(assetsMap, assetsName), assetStudioCLIPath, assetsName);
-        });
+        Console.WriteLine("[Start] - Export start.");
+        Parallel.ForEach(assetsIndex, assetsName => Resources.Export(Resources.CreateAssetSourcePathHashSet(assetsMap, assetsName), assetStudioCLIPath, assetsName));
     }
     finally
     {
@@ -39,7 +37,7 @@ if (Args.Count == 2)
 else
 {
     Console.WriteLine("Usage: ");
-    Console.WriteLine(@"dotnet script <script name> -- <assets_map.json path> <assetStudioCLIPath>");
+    Console.WriteLine("dotnet script <script name> -- <assets_map.json path> <assetStudioCLIPath>");
     Console.WriteLine("Example: ");
     Console.WriteLine(@"dotnet script .\scripts\main.csx -- assets_map.json assetStudioCLIPath");
 }
