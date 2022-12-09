@@ -1,5 +1,4 @@
 /data
 **/publish
-assets_map.json
-assets_map.xml
-assets_map_GI.json
+assets_map*.*
+/3rd
