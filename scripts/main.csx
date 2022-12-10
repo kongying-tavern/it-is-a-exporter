@@ -20,13 +20,18 @@ if (Args.Count == 2)
     };
 
     var assetsMap = await AssetsMapJSON.DeserializeFromFileAsync(fileName);
-    Resources.Delete();
+    Resources.DeleteDirectory();
     // AssetsMapJSON.Analyzer(assetsMap);
+    var taskList = new List<Task>();
     var watch = Stopwatch.StartNew();
     try
     {
         Console.WriteLine("[Start] - Export start.");
-        Parallel.ForEach(assetsIndex, assetsName => Resources.Export(Resources.CreateAssetSourcePathHashSet(assetsMap, assetsName), assetStudioCLIPath, assetsName));
+        foreach (var assetsName in assetsIndex)
+        {
+            taskList.Add(Task.Run(() => Resources.ExportAsync(Resources.CreateAssetSourcePathSetParallel(assetsMap, assetsName), assetStudioCLIPath, assetsName)));
+        }
+        await Task.WhenAll(taskList.ToArray());
     }
     finally
     {
