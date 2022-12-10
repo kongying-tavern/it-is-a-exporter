@@ -24,11 +24,15 @@ AssetStudioCLI.exe --game GI --map_op AssetMap --map_type JSON --group_assets_ty
 ```
 
 ```powershell
-dotnet script .\scripts\main.csx -- assets_map_GI.json $env:Studio
+dotnet script -c Release .\scripts\main.csx -- assets_map_GI.json $env:Studio
 ```
 
 ```powershell
- dotnet script .\scripts\delete.csx
+dotnet script -c Release .\scripts\delete.csx
+```
+
+```powershell
+dotnet script -c Release .\scripts\main.csx -- assets_map_GI.json .\3rd\studio\AssetStudioCLI.exe && dotnet script -c Release .\scripts\delete.csx
 ```
 
 ## License
