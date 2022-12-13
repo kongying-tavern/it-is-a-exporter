@@ -35,6 +35,10 @@ dotnet script -c Release .\scripts\delete.csx
 dotnet script -c Release .\scripts\main.csx -- assets_map_GI.json .\3rd\studio\AssetStudioCLI.exe && dotnet script -c Release .\scripts\delete.csx
 ```
 
+```powershell
+dotnet script -c Release .\scripts\main.csx -- assets_map_GI.json .\3rd\studio\AssetStudioCLI.exe && dotnet script -c Release .\scripts\delete.csx && dotnet script -c Release .\scripts\CreateTileMetaJSON.csx
+```
+
 ## License
 
 [GNU AGPLv3](LICENSE.txt)
