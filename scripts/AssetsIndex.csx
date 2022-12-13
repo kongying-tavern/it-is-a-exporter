@@ -10,4 +10,5 @@ public static class AssetsIndex
     public const string UI_EmotionIcon = "UI_EmotionIcon";//家园
     public const string UI_EmotionTagIcon = "UI_EmotionTagIcon";//家园
     public const string UI_Gcg_CardFace_ ="UI_Gcg_CardFace_";//卡面
+    public const string UI_Map_ ="UI_Map_"; // map
 }

@@ -16,7 +16,8 @@ if (Args.Count == 2)
         AssetsIndex.UI_Map_AbyssalPalace_,
         AssetsIndex.UI_EmotionIcon,
         AssetsIndex.UI_EmotionTagIcon,
-        AssetsIndex.UI_Gcg_CardFace_
+        AssetsIndex.UI_Gcg_CardFace_,
+        AssetsIndex.UI_Map_
     };
 
     var assetsMap = await AssetsMapJSON.DeserializeFromFileAsync(fileName);
