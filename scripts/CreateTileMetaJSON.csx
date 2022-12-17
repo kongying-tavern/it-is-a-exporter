@@ -1,8 +1,11 @@
+#load "Utils.csx"
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 var path = "./data/UI_MapBack_/Texture2D/";
+var teyvatTilePath = Path.Combine("./output", "Teyvat");
 const string pattern = @"\bUI_MapBack_(?<X>-?\d+)_(?<Y>-?\d+)\.png\b";
 
 var regex = new Regex(pattern, RegexOptions.IgnoreCase);
@@ -73,15 +76,34 @@ var serializeOptions = new JsonSerializerOptions
 };
 
 string fileName = "TyvetImageMetaData.json";
-string outputPath = Path.Combine("./output", "json", fileName);
+string outputPath = Path.Combine("./output", "json");
 
-using (FileStream fileStream = File.Create(outputPath))
+using (FileStream fileStream = File.Create(Path.Combine(outputPath, fileName)))
 {
     await JsonSerializer.SerializeAsync(fileStream, JsonMeta, serializeOptions);
     await fileStream.DisposeAsync();
 }
 
-Console.WriteLine(File.ReadAllText(outputPath));
+Console.WriteLine(File.ReadAllText(Path.Combine(outputPath, fileName)));
+
+var diffPath = Path.Combine("./output", "diff");
+Utils.ClearDirectory(teyvatTilePath);
+for (var x = positionX.Min(); x <= positionX.Max(); x++)
+{
+    for (var y = positionY.Min(); y <= positionY.Max(); y++)
+    {
+        var fileName = $"UI_MapBack_{y}_{x}.png";
+        if (!File.Exists(Path.Combine(path, fileName)))
+        {
+            Console.WriteLine($"CreateFile: UI_MapBack_{y}_{x}.png");
+            File.Copy(Path.Combine(path, "UI_MapBack_None.png"), Path.Combine(teyvatTilePath, fileName));
+        }
+        else if (!File.Exists(Path.Combine(diffPath, fileName)))
+        {
+            File.Copy(Path.Combine(path, fileName), Path.Combine(teyvatTilePath, fileName));
+        }
+    }
+}
 
 public record Meta
 {

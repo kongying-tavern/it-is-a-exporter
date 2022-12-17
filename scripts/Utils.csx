@@ -57,4 +57,16 @@ public static class Utils
         }
         return hashString;
     }
+    public static void ClearDirectory(string path)
+    {
+        if (Directory.Exists(path))
+        {
+            Directory.Delete(path, true);
+            Directory.CreateDirectory(path);
+        }
+        else
+        {
+            Directory.CreateDirectory(path);
+        }
+    }
 }
