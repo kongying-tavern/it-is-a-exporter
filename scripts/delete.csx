@@ -1,9 +1,19 @@
 #load "Utils.csx"
+using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
-var path = "./data/UI_MapBack_/Texture2D/";
+static var path = "./data/UI_MapBack_/Texture2D/";
+
+static string fileName = "diff.csv";
+static string outputPath = Path.Combine("./output", "diff");
+
+static var set = new ConcurrentDictionary<string, byte>();
+
+Utils.ClearDirectory(outputPath);
+
 await DeleteSameFileBySHA256Async(path);
+await CreateFileListSHA256Async();
 
 public static async Task DeleteSameFileBySHA256Async(string directory)
 {
@@ -20,7 +30,7 @@ public static async Task DeleteSameFileBySHA256Async(string directory)
         {
             foreach (var fileInfo in files)
             {
-                await Task.Run(() => CompareFileBySHA256(regex, fileInfo, directory, sha256));
+                await Task.Run(() => CompareFileBySHA256Async(regex, fileInfo, directory, sha256));
             }
         }
     }
@@ -30,7 +40,7 @@ public static async Task DeleteSameFileBySHA256Async(string directory)
     }
 }
 
-private static void CompareFileBySHA256(Regex regex, FileInfo fileInfo, string directory, SHA256 sha256)
+private static Task CompareFileBySHA256Async(Regex regex, FileInfo fileInfo, string directory, SHA256 sha256)
 {
     if (regex.IsMatch(fileInfo.Name))
     {
@@ -44,17 +54,29 @@ private static void CompareFileBySHA256(Regex regex, FileInfo fileInfo, string d
             try { fileInfo.Delete(); }
             finally
             {
-                Console.WriteLine($"[Deleted] - File deleted: {fileInfo.Name} has same hash with {fileName}");
-                Console.WriteLine($"{fileHash2}: {fileInfo.Name}");
-                Console.WriteLine($"{fileHash1}: {fileName}");
+                WriteLine($"[Deleted] - File deleted: {fileInfo.Name} has same hash with {fileName}");
+                WriteLine($"{fileHash2}: {fileInfo.Name}");
+                WriteLine($"{fileHash1}: {fileName}");
             }
         }
         else
         {
-            Console.WriteLine($"[Finished] - File not same: {fileInfo.Name} does not has same hash with {fileName}");
-            Console.WriteLine($"{fileHash2}: {fileInfo.Name}");
-            Console.WriteLine($"{fileHash1}: {fileName}");
+            WriteLine($"[Finished] - File not same: {fileInfo.Name} does not has same hash with {fileName}");
+            WriteLine($"{fileHash2}: {fileInfo.Name}");
+            WriteLine($"{fileHash1}: {fileName}");
+            set.TryAdd($"{fileInfo.Name},{fileHash2}", 0);
+            set.TryAdd($"{fileName},{fileHash1}", 0);
+            File.Copy(fileInfo.FullName, Path.Combine(outputPath, fileInfo.Name), true);
+            File.Copy(Path.Combine(path, fileName), Path.Combine(outputPath, fileName), true);
         }
-        Console.WriteLine();
+        WriteLine();
     }
+
+    return Task.CompletedTask;
+}
+
+public static async Task CreateFileListSHA256Async()
+{
+    await File.AppendAllLinesAsync(Path.Combine(outputPath, fileName), new[] { "Name,SHA256,VersionState" });
+    await File.AppendAllLinesAsync(Path.Combine(outputPath, fileName), set.Keys);
 }
