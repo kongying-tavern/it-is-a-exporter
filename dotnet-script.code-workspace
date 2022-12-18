@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"omnisharp.enableAsyncCompletion": true,
+		"omnisharp.enableRoslynAnalyzers": true,
+		"omnisharp.organizeImportsOnFormat": true
+	},
+    "extensions": {
+        "recommendations": [
+            "ms-dotnettools.csharp",
+            "josefpihrt-vscode.roslynator",
+            "streetsidesoftware.code-spell-checker",
+            "editorconfig.editorconfig"
+        ]
+    }
+}
