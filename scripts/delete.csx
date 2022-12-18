@@ -6,11 +6,11 @@ using System.Text.RegularExpressions;
 static var path = "./data/UI_MapBack_/Texture2D/";
 
 static string fileName = "diff.csv";
-static string outputPath = Path.Combine("./output", "diff");
+static string diffPath = Path.Combine("./output", "diff");
 
 static var set = new ConcurrentDictionary<string, byte>();
 
-Utils.ClearDirectory(outputPath);
+Utils.ClearDirectory(diffPath);
 
 await DeleteSameFileBySHA256Async(path);
 await CreateFileListSHA256Async();
@@ -66,8 +66,8 @@ private static Task CompareFileBySHA256Async(Regex regex, FileInfo fileInfo, str
             WriteLine($"{fileHash1}: {fileName}");
             set.TryAdd($"{fileInfo.Name},{fileHash2}", 0);
             set.TryAdd($"{fileName},{fileHash1}", 0);
-            File.Copy(fileInfo.FullName, Path.Combine(outputPath, fileInfo.Name), true);
-            File.Copy(Path.Combine(path, fileName), Path.Combine(outputPath, fileName), true);
+            File.Copy(fileInfo.FullName, Path.Combine(diffPath, fileInfo.Name), true);
+            File.Copy(Path.Combine(path, fileName), Path.Combine(diffPath, fileName), true);
         }
         WriteLine();
     }
