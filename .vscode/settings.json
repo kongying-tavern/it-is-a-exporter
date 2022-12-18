@@ -1,9 +1,9 @@
 {
-    "omnisharp.enableAsyncCompletion": true,
-    "omnisharp.enableRoslynAnalyzers": true,
-    "omnisharp.organizeImportsOnFormat": true,
     "search.exclude": {
         "/data": true,
-        "/3rd": true
+        "/3rd": true,
+        "/output": true
     },
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable"
 }
